@@ -9,7 +9,9 @@ import controller.DepartmentController;
 import controller.EmployeeController;
 import controller.JobController;
 import daos.GeneralDAO;
+import icontroller.IDepartmentController;
 import icontroller.IEmployeeController;
+import icontroller.IJobController;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -39,6 +41,8 @@ public class EmployeesInternalFrame extends javax.swing.JInternalFrame {
     GeneralDAO<Department> ddao = new GeneralDAO<>(factory, Department.class);
     GeneralDAO<Job> jdao = new GeneralDAO<>(factory, Job.class);
     IEmployeeController eco = new EmployeeController(factory);
+    IJobController jco = new JobController(factory);
+    IDepartmentController dco = new DepartmentController(factory);
     Date date = new Date(); // this object contains the current date value 
     SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
 
@@ -182,14 +186,22 @@ public class EmployeesInternalFrame extends javax.swing.JInternalFrame {
 //        showTable("");
 //    }
 //
-    public void insert(String key) {
-        DefaultTableModel model = (DefaultTableModel) tblEmployee.getModel();
-        model.setRowCount(0);
-//        if (key == "") {
-//            showTable("");
+//    public void insert(String key) {
+//        DefaultTableModel model = (DefaultTableModel) tblEmployee.getModel();
+//        model.setRowCount(0);
+////        if (key == "") {
+////            showTable("");
+////        }
+//        showTable(key);
+//    }
+//        public void updateTableEmployee(String s) {
+//        DefaultTableModel model = (DefaultTableModel) tblEmployee.getModel();
+//        model.setRowCount(0);
+//        if (s == "") {
+//            showTable();
 //        }
-        showTable(key);
-    }
+//        showTable(s);
+//    }
 
     public void resetText() {
         jID.setText("");
@@ -633,7 +645,7 @@ public class EmployeesInternalFrame extends javax.swing.JInternalFrame {
 //            insert();
             resetText();
         }
-
+        }
     }//GEN-LAST:event_btnInsertActionPerformed
 
     private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
@@ -641,14 +653,15 @@ public class EmployeesInternalFrame extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnResetActionPerformed
 
     private void jSearchKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jSearchKeyTyped
-        insert(jSearch.getText());
+//        updateTableEmployee(jSearch.getText());
+
     }//GEN-LAST:event_jSearchKeyTyped
 
     private void tblEmployeeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblEmployeeMouseClicked
         DefaultTableModel model = (DefaultTableModel) tblEmployee.getModel();
         int SelectRowIndex = tblEmployee.getSelectedRow();
 
-        btnInsert.setEnabled(true);
+        btnInsert.setEnabled(false);
         jID.setText(model.getValueAt(SelectRowIndex, 1).toString());
         jFirst.setText(model.getValueAt(SelectRowIndex, 2).toString());
         jLast.setText(model.getValueAt(SelectRowIndex, 3).toString());
@@ -663,9 +676,15 @@ public class EmployeesInternalFrame extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_tblEmployeeMouseClicked
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
-                Employee emp = new Employee();
-//
-//        Job job = new Job();
+       Employee emp = new Employee();
+        String dprtmnid = jDepartment.getSelectedItem().toString();
+        dprtmnid = dprtmnid.substring(0, dprtmnid.indexOf("-"));
+        String jbid = jJob.getSelectedItem().toString();
+        String mngrid = jManager.getSelectedItem().toString();
+        jbid = jbid.substring(0, jbid.indexOf("-"));
+        mngrid = mngrid.substring(0, mngrid.indexOf("-"));
+        date = jDate.getDate();
+        
         emp.setEmployeeId(new Integer(jID.getText()));
         emp.setFirstName(jFirst.getText());
         emp.setLastName(jLast.getText());
@@ -674,20 +693,13 @@ public class EmployeesInternalFrame extends javax.swing.JInternalFrame {
         emp.setHireDate(jDate.getDate());
         emp.setSalary(new BigDecimal(jSalary.getText()));
         emp.setCommissionPct(new BigDecimal(jCommission.getText()));
-        emp.getDepartmentId(new Department((jDepartment.getSelectedItem())));
-        emp.getManagerId(new Employee((jJob.getSelectedItem())));
-        emp.getJobId(new Job((jJob.getSelectedItem())));
-//        String jbid = jJob.getSelectedItem().toString();
-//        String dprtmnid = jDepartment.getSelectedItem().toString();
-//        String mngrid = jManager.getSelectedItem().toString();
+        emp.setDepartmentId(new Department(new Short(dprtmnid)));
+        emp.setManagerId(new Employee((new Integer(mngrid))));
+        emp.setJobId(new Job(((jbid))));
 
-//        jbid = jbid.substring(0, jbid.indexOf(" - "));
-//        dprtmnid = dprtmnid.substring(0, dprtmnid.indexOf(" - "));
-//        mngrid = mngrid.substring(0, mngrid.indexOf(" - "));
-        date = jDate.getDate();
         String hiredate = formatter.format(date);
         int confirm = JOptionPane.showConfirmDialog(this, "Kamu yakin mau menambah data?", "Konfirmasi", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-//        if (confirm == JOptionPane.YES_OPTION) {
+        if (confirm == JOptionPane.YES_OPTION) {
 //            JOptionPane.showMessageDialog(null, eco.save(jID.getText(), jFirst.getText(),
 //                    jLast.getText(), jEmail.getText(), jPhone.getText(), hiredate, jSalary.getText(),
 //                    jCommission.getText(), dprtmnid, mngrid, jbid));
@@ -695,6 +707,7 @@ public class EmployeesInternalFrame extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(null, edao.saveOrDelete(emp, false));
 //            insert();
             resetText();
+        }
         }
     }//GEN-LAST:event_btnUpdateActionPerformed
 
