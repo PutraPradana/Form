@@ -284,10 +284,8 @@
           <Properties>
             <Property name="maximumRowCount" type="int" value="100"/>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="3">
+              <StringArray count="1">
                 <StringItem index="0" value="Manager ID"/>
-                <StringItem index="1" value="100"/>
-                <StringItem index="2" value="102"/>
               </StringArray>
             </Property>
           </Properties>
@@ -299,11 +297,8 @@
           <Properties>
             <Property name="maximumRowCount" type="int" value="100"/>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="4">
+              <StringArray count="1">
                 <StringItem index="0" value="Department ID"/>
-                <StringItem index="1" value="60"/>
-                <StringItem index="2" value="90"/>
-                <StringItem index="3" value="100"/>
               </StringArray>
             </Property>
           </Properties>
@@ -315,10 +310,8 @@
           <Properties>
             <Property name="maximumRowCount" type="int" value="100"/>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="3">
+              <StringArray count="1">
                 <StringItem index="0" value="Job ID"/>
-                <StringItem index="1" value="AD_PRES"/>
-                <StringItem index="2" value="IT_PROG"/>
               </StringArray>
             </Property>
           </Properties>
@@ -389,6 +382,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Update"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnUpdateActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JButton" name="btnInsert">
               <Properties>

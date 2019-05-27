@@ -36,6 +36,8 @@ public class EmployeesInternalFrame extends javax.swing.JInternalFrame {
     SessionFactory factory = HibernateUtil.getSessionFactory();
 
     GeneralDAO<Employee> edao = new GeneralDAO<>(factory, Employee.class);
+    GeneralDAO<Department> ddao = new GeneralDAO<>(factory, Department.class);
+    GeneralDAO<Job> jdao = new GeneralDAO<>(factory, Job.class);
     IEmployeeController eco = new EmployeeController(factory);
     Date date = new Date(); // this object contains the current date value 
     SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
@@ -57,9 +59,9 @@ public class EmployeesInternalFrame extends javax.swing.JInternalFrame {
         model.addColumn("Department ID");
 
         showTable();
-//        getDepartment();
-//        getJob();
-//        getManager();
+        getDepartment("");
+        getJob("");
+        getManager("");
         nourut();
 
     }
@@ -111,21 +113,32 @@ public class EmployeesInternalFrame extends javax.swing.JInternalFrame {
         }
     }
     
-    private void getJob() {
-        for (Job job : new JobController(factory).getAll()) {
-            jJob.addItem(job.getJobTitle());
+    private void getJob(String key) {
+//        for (Job job : new JobController(factory).getAll()) {
+//            jJob.addItem(job.getJobTitle());
+                for (Job job : jdao.getData(key)) {
+            jJob.addItem(job.getJobId()+ "-" + job.getJobTitle());
         }
     }
 
-    private void getDepartment() {
-        for (Department department : new DepartmentController(factory).getAll()) {
-            jDepartment.addItem(department.getDepartmentId() + " - " + department.getDepartmentName());
+    private void getDepartment(String key) {
+//        for (Department department : new GeneralDAO<>(factory, Employee.class));
+//            jDepartment.addItem(department.getDepartmentId() + " - " + department.getDepartmentName());
+                for (Department depa : ddao.getData(key)) {
+            jDepartment.addItem(depa.getDepartmentId()+"-"+depa.getDepartmentName());
         }
     }
 
-    private void getManager() {
-        for (Employee employee : new EmployeeController(factory).getAll()) {
-            jManager.addItem(employee.getEmployeeId() + " - " + employee.getLastName());
+    private void getManager(String key) {
+//        for (Employee employee : new EmployeeController(factory).getAll()) {
+//            jManager.addItem(employee.getEmployeeId() + " - " + employee.getLastName());
+                for (Employee emp : edao.getData(key)) {
+//            jManager.addItem(emp.getManagerId().getLastName());
+            if (emp.getManagerId() == null) {
+            jManager.addItem("");
+            } else {
+            jManager.addItem(emp.getEmployeeId()+ "-" + emp.getLastName());
+            }
         }
     }
 
@@ -305,13 +318,13 @@ public class EmployeesInternalFrame extends javax.swing.JInternalFrame {
         jLabel9.setText("Salary");
 
         jManager.setMaximumRowCount(100);
-        jManager.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Manager ID", "100", "102" }));
+        jManager.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Manager ID" }));
 
         jDepartment.setMaximumRowCount(100);
-        jDepartment.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Department ID", "60", "90", "100" }));
+        jDepartment.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Department ID" }));
 
         jJob.setMaximumRowCount(100);
-        jJob.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Job ID", "AD_PRES", "IT_PROG" }));
+        jJob.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Job ID" }));
 
         jLabel10.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel10.setText("Manager ID");
@@ -323,6 +336,11 @@ public class EmployeesInternalFrame extends javax.swing.JInternalFrame {
         jLabel12.setText("Job ID");
 
         btnUpdate.setText("Update");
+        btnUpdate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUpdateActionPerformed(evt);
+            }
+        });
 
         btnInsert.setText("Insert");
         btnInsert.addActionListener(new java.awt.event.ActionListener() {
@@ -584,8 +602,14 @@ public class EmployeesInternalFrame extends javax.swing.JInternalFrame {
 
     private void btnInsertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInsertActionPerformed
         Employee emp = new Employee();
-//
-//        Job job = new Job();
+        String dprtmnid = jDepartment.getSelectedItem().toString();
+        dprtmnid = dprtmnid.substring(0, dprtmnid.indexOf("-"));
+        String jbid = jJob.getSelectedItem().toString();
+        String mngrid = jManager.getSelectedItem().toString();
+        jbid = jbid.substring(0, jbid.indexOf("-"));
+        mngrid = mngrid.substring(0, mngrid.indexOf("-"));
+        date = jDate.getDate();
+        
         emp.setEmployeeId(new Integer(jID.getText()));
         emp.setFirstName(jFirst.getText());
         emp.setLastName(jLast.getText());
@@ -594,20 +618,13 @@ public class EmployeesInternalFrame extends javax.swing.JInternalFrame {
         emp.setHireDate(jDate.getDate());
         emp.setSalary(new BigDecimal(jSalary.getText()));
         emp.setCommissionPct(new BigDecimal(jCommission.getText()));
-        emp.getDepartmentId(new Department((jDepartment.getSelectedItem())));
-        emp.getManagerId(new Employee((jJob.getSelectedItem())));
-        emp.getJobId(new Job((jJob.getSelectedItem())));
-//        String jbid = jJob.getSelectedItem().toString();
-//        String dprtmnid = jDepartment.getSelectedItem().toString();
-//        String mngrid = jManager.getSelectedItem().toString();
+        emp.setDepartmentId(new Department(new Short(dprtmnid)));
+        emp.setManagerId(new Employee((new Integer(mngrid))));
+        emp.setJobId(new Job(((jbid))));
 
-//        jbid = jbid.substring(0, jbid.indexOf(" - "));
-//        dprtmnid = dprtmnid.substring(0, dprtmnid.indexOf(" - "));
-//        mngrid = mngrid.substring(0, mngrid.indexOf(" - "));
-        date = jDate.getDate();
         String hiredate = formatter.format(date);
         int confirm = JOptionPane.showConfirmDialog(this, "Kamu yakin mau menambah data?", "Konfirmasi", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-//        if (confirm == JOptionPane.YES_OPTION) {
+        if (confirm == JOptionPane.YES_OPTION) {
 //            JOptionPane.showMessageDialog(null, eco.save(jID.getText(), jFirst.getText(),
 //                    jLast.getText(), jEmail.getText(), jPhone.getText(), hiredate, jSalary.getText(),
 //                    jCommission.getText(), dprtmnid, mngrid, jbid));
@@ -644,6 +661,42 @@ public class EmployeesInternalFrame extends javax.swing.JInternalFrame {
         jManager.setSelectedItem(model.getValueAt(SelectRowIndex, 10).toString());
         jDepartment.setSelectedItem(model.getValueAt(SelectRowIndex, 11).toString());
     }//GEN-LAST:event_tblEmployeeMouseClicked
+
+    private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
+                Employee emp = new Employee();
+//
+//        Job job = new Job();
+        emp.setEmployeeId(new Integer(jID.getText()));
+        emp.setFirstName(jFirst.getText());
+        emp.setLastName(jLast.getText());
+        emp.setEmail(jEmail.getText());
+        emp.setPhoneNumber(jPhone.getText());
+        emp.setHireDate(jDate.getDate());
+        emp.setSalary(new BigDecimal(jSalary.getText()));
+        emp.setCommissionPct(new BigDecimal(jCommission.getText()));
+        emp.getDepartmentId(new Department((jDepartment.getSelectedItem())));
+        emp.getManagerId(new Employee((jJob.getSelectedItem())));
+        emp.getJobId(new Job((jJob.getSelectedItem())));
+//        String jbid = jJob.getSelectedItem().toString();
+//        String dprtmnid = jDepartment.getSelectedItem().toString();
+//        String mngrid = jManager.getSelectedItem().toString();
+
+//        jbid = jbid.substring(0, jbid.indexOf(" - "));
+//        dprtmnid = dprtmnid.substring(0, dprtmnid.indexOf(" - "));
+//        mngrid = mngrid.substring(0, mngrid.indexOf(" - "));
+        date = jDate.getDate();
+        String hiredate = formatter.format(date);
+        int confirm = JOptionPane.showConfirmDialog(this, "Kamu yakin mau menambah data?", "Konfirmasi", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+//        if (confirm == JOptionPane.YES_OPTION) {
+//            JOptionPane.showMessageDialog(null, eco.save(jID.getText(), jFirst.getText(),
+//                    jLast.getText(), jEmail.getText(), jPhone.getText(), hiredate, jSalary.getText(),
+//                    jCommission.getText(), dprtmnid, mngrid, jbid));
+               if (confirm == JOptionPane.YES_OPTION) {
+            JOptionPane.showMessageDialog(null, edao.saveOrDelete(emp, false));
+//            insert();
+            resetText();
+        }
+    }//GEN-LAST:event_btnUpdateActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
