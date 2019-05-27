@@ -56,10 +56,10 @@ public class EmployeesInternalFrame extends javax.swing.JInternalFrame {
         model.addColumn("Manager ID");
         model.addColumn("Department ID");
 
-        showTable("");
-        getDepartment();
-        getJob();
-        getManager();
+        showTable();
+//        getDepartment();
+//        getJob();
+//        getManager();
         nourut();
 
     }
@@ -80,9 +80,9 @@ public class EmployeesInternalFrame extends javax.swing.JInternalFrame {
         Object[] row = new Object[15];
         List<Employee> emp = new ArrayList<>();
         emp = edao.getData(key);
-//        if (key.isEmpty()) {
-//            emp = eco.getAll();
-//        }
+        if (key.isEmpty()) {
+            emp = eco.getAll();
+        }
         for (int i = 0; i < emp.size(); i++) {
             row[0] = nourut();
             row[1] = emp.get(i).getEmployeeId();
@@ -96,24 +96,24 @@ public class EmployeesInternalFrame extends javax.swing.JInternalFrame {
             row[9] = emp.get(i).getCommissionPct();
             row[11] = emp.get(i).getDepartmentId();
 
-            if (emp.get(i).getManagerId() == null) {
-                row[10] = "";
-            } else {
-                row[10] = emp.get(i).getManagerId().getLastName();
-            }
-
-            if (emp.get(i).getDepartmentId() == null) {
-                row[11] = "";
-            } else {
-                row[11] = emp.get(i).getDepartmentId().getDepartmentName();
-            }
-            model.addRow(row);
+//            if (emp.get(i).getManagerId() == null) {
+//                row[10] = "";
+//            } else {
+//                row[10] = emp.get(i).getManagerId().getLastName();
+//            }
+//
+//            if (emp.get(i).getDepartmentId() == null) {
+//                row[11] = "";
+//            } else {
+//                row[11] = emp.get(i).getDepartmentId().getDepartmentName();
+//            }
+//            model.addRow(row);
         }
     }
-
+    
     private void getJob() {
         for (Job job : new JobController(factory).getAll()) {
-            jJob.addItem(job.getJobId() + " - " + job.getJobTitle());
+            jJob.addItem(job.getJobTitle());
         }
     }
 
@@ -131,9 +131,9 @@ public class EmployeesInternalFrame extends javax.swing.JInternalFrame {
 
     public void showTable() {
         DefaultTableModel model = (DefaultTableModel) tblEmployee.getModel();
-        Object[] row = new Object[11];
+        Object[] row = new Object[12];
         List<Employee> emp = new ArrayList<>();
-        emp = eco.getAll();
+        emp = edao.getData("");
 
         for (int i = 0; i < emp.size(); i++) {
             row[0] = nourut();
@@ -146,19 +146,19 @@ public class EmployeesInternalFrame extends javax.swing.JInternalFrame {
             row[7] = emp.get(i).getJobId().getJobTitle();
             row[8] = emp.get(i).getSalary();
             row[9] = emp.get(i).getCommissionPct();
-            row[10] = emp.get(i).getDepartmentId();
+//            row[11] = emp.get(i).getDepartmentId().getDepartmentName();
 
-//            if (emp.get(i).getManagerId() == null) {
-//                row[10] = "";
-//            } else {
-//                row[10] = emp.get(i).getManagerId().getLastName();
-//            }
+            if (emp.get(i).getManagerId() == null) {
+                row[10] = "";
+            } else {
+                row[10] = emp.get(i).getManagerId().getLastName();
+            }
 //
-//            if (emp.get(i).getDepartmentId() == null) {
-//                row[11] = "";
-//            } else {
-//                row[11] = emp.get(i).getDepartmentId().getDepartmentName();
-//            }
+            if (emp.get(i).getDepartmentId() == null) {
+                row[11] = "";
+            } else {
+                row[11] = emp.get(i).getDepartmentId().getDepartmentName();
+            }
             model.addRow(row);
         }
     }
@@ -304,10 +304,13 @@ public class EmployeesInternalFrame extends javax.swing.JInternalFrame {
         jLabel9.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel9.setText("Salary");
 
+        jManager.setMaximumRowCount(100);
         jManager.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Manager ID", "100", "102" }));
 
+        jDepartment.setMaximumRowCount(100);
         jDepartment.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Department ID", "60", "90", "100" }));
 
+        jJob.setMaximumRowCount(100);
         jJob.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Job ID", "AD_PRES", "IT_PROG" }));
 
         jLabel10.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
@@ -580,23 +583,23 @@ public class EmployeesInternalFrame extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jDatePropertyChange
 
     private void btnInsertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInsertActionPerformed
-//        Employee emp = new Employee();
+        Employee emp = new Employee();
 //
 //        Job job = new Job();
-//        emp.setEmployeeId(new Integer(jID.getText()));
-//        emp.setFirstName(jFirst.getText());
-//        emp.setLastName(jLast.getText());
-//        emp.setEmail(jEmail.getText());
-//        emp.setPhoneNumber(jPhone.getText());
-//        emp.setHireDate(jDate.getDateFormatString());
-//        emp.setSalary(new BigDecimal(jFirst.getText()));
-//        emp.setCommissionPct(new BigDecimal(jCommission.getText()));
-//        emp.getDepartmentId(jDepartment.getSelectedItem(Department));
-//        emp.getManagerId(jManager.getSelectedItem(Manager));
-//        emp.getJobId(jJob.getSelectedItem());
-        String jbid = jJob.getSelectedItem().toString();
-        String dprtmnid = jDepartment.getSelectedItem().toString();
-        String mngrid = jManager.getSelectedItem().toString();
+        emp.setEmployeeId(new Integer(jID.getText()));
+        emp.setFirstName(jFirst.getText());
+        emp.setLastName(jLast.getText());
+        emp.setEmail(jEmail.getText());
+        emp.setPhoneNumber(jPhone.getText());
+        emp.setHireDate(jDate.getDate());
+        emp.setSalary(new BigDecimal(jSalary.getText()));
+        emp.setCommissionPct(new BigDecimal(jCommission.getText()));
+        emp.getDepartmentId(new Department((jDepartment.getSelectedItem())));
+        emp.getManagerId(new Employee((jJob.getSelectedItem())));
+        emp.getJobId(new Job((jJob.getSelectedItem())));
+//        String jbid = jJob.getSelectedItem().toString();
+//        String dprtmnid = jDepartment.getSelectedItem().toString();
+//        String mngrid = jManager.getSelectedItem().toString();
 
 //        jbid = jbid.substring(0, jbid.indexOf(" - "));
 //        dprtmnid = dprtmnid.substring(0, dprtmnid.indexOf(" - "));
@@ -604,10 +607,12 @@ public class EmployeesInternalFrame extends javax.swing.JInternalFrame {
         date = jDate.getDate();
         String hiredate = formatter.format(date);
         int confirm = JOptionPane.showConfirmDialog(this, "Kamu yakin mau menambah data?", "Konfirmasi", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-        if (confirm == JOptionPane.YES_OPTION) {
-            JOptionPane.showMessageDialog(null, eco.save(jID.getText(), jFirst.getText(),
-                    jLast.getText(), jEmail.getText(), jPhone.getText(), hiredate, jSalary.getText(),
-                    jCommission.getText(), dprtmnid, mngrid, jbid));
+//        if (confirm == JOptionPane.YES_OPTION) {
+//            JOptionPane.showMessageDialog(null, eco.save(jID.getText(), jFirst.getText(),
+//                    jLast.getText(), jEmail.getText(), jPhone.getText(), hiredate, jSalary.getText(),
+//                    jCommission.getText(), dprtmnid, mngrid, jbid));
+               if (confirm == JOptionPane.YES_OPTION) {
+            JOptionPane.showMessageDialog(null, edao.saveOrDelete(emp, false));
 //            insert();
             resetText();
         }
@@ -626,7 +631,7 @@ public class EmployeesInternalFrame extends javax.swing.JInternalFrame {
         DefaultTableModel model = (DefaultTableModel) tblEmployee.getModel();
         int SelectRowIndex = tblEmployee.getSelectedRow();
 
-        btnInsert.setEnabled(false);
+        btnInsert.setEnabled(true);
         jID.setText(model.getValueAt(SelectRowIndex, 1).toString());
         jFirst.setText(model.getValueAt(SelectRowIndex, 2).toString());
         jLast.setText(model.getValueAt(SelectRowIndex, 3).toString());
@@ -638,8 +643,6 @@ public class EmployeesInternalFrame extends javax.swing.JInternalFrame {
         jCommission.setText(model.getValueAt(SelectRowIndex, 9).toString());
         jManager.setSelectedItem(model.getValueAt(SelectRowIndex, 10).toString());
         jDepartment.setSelectedItem(model.getValueAt(SelectRowIndex, 11).toString());
-        
-
     }//GEN-LAST:event_tblEmployeeMouseClicked
 
 
