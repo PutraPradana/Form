@@ -83,12 +83,10 @@ public class EmployeesInternalFrame extends javax.swing.JInternalFrame {
 
     public void showTable(String key) {
         DefaultTableModel model = (DefaultTableModel) tblEmployee.getModel();
-        Object[] row = new Object[15];
+        Object[] row = new Object[12];
         List<Employee> emp = new ArrayList<>();
-        emp = edao.getData(key);
-        if (key.isEmpty()) {
-            emp = eco.getAll();
-        }
+        emp = eco.search(key);
+
         for (int i = 0; i < emp.size(); i++) {
             row[0] = nourut();
             row[1] = emp.get(i).getEmployeeId();
@@ -100,20 +98,20 @@ public class EmployeesInternalFrame extends javax.swing.JInternalFrame {
             row[7] = emp.get(i).getJobId().getJobTitle();
             row[8] = emp.get(i).getSalary();
             row[9] = emp.get(i).getCommissionPct();
-            row[11] = emp.get(i).getDepartmentId();
+//            row[11] = emp.get(i).getDepartmentId().getDepartmentName();
 
-//            if (emp.get(i).getManagerId() == null) {
-//                row[10] = "";
-//            } else {
-//                row[10] = emp.get(i).getManagerId().getLastName();
-//            }
+            if (emp.get(i).getManagerId() == null) {
+                row[10] = "";
+            } else {
+                row[10] = emp.get(i).getManagerId().getLastName();
+            }
 //
-//            if (emp.get(i).getDepartmentId() == null) {
-//                row[11] = "";
-//            } else {
-//                row[11] = emp.get(i).getDepartmentId().getDepartmentName();
-//            }
-//            model.addRow(row);
+            if (emp.get(i).getDepartmentId() == null) {
+                row[11] = "";
+            } else {
+                row[11] = emp.get(i).getDepartmentId().getDepartmentName();
+            }
+            model.addRow(row);
         }
     }
     
@@ -150,7 +148,7 @@ public class EmployeesInternalFrame extends javax.swing.JInternalFrame {
         DefaultTableModel model = (DefaultTableModel) tblEmployee.getModel();
         Object[] row = new Object[12];
         List<Employee> emp = new ArrayList<>();
-        emp = edao.getData("");
+        emp = eco.getAll();
 
         for (int i = 0; i < emp.size(); i++) {
             row[0] = nourut();
@@ -194,14 +192,14 @@ public class EmployeesInternalFrame extends javax.swing.JInternalFrame {
 ////        }
 //        showTable(key);
 //    }
-//        public void updateTableEmployee(String s) {
-//        DefaultTableModel model = (DefaultTableModel) tblEmployee.getModel();
-//        model.setRowCount(0);
-//        if (s == "") {
-//            showTable();
-//        }
-//        showTable(s);
-//    }
+        public void updateTableEmployee(String s) {
+        DefaultTableModel model = (DefaultTableModel) tblEmployee.getModel();
+        model.setRowCount(0);
+        if (s == "") {
+            showTable();
+        }
+        showTable(s);
+    }
 
     public void resetText() {
         jID.setText("");
@@ -653,7 +651,7 @@ public class EmployeesInternalFrame extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnResetActionPerformed
 
     private void jSearchKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jSearchKeyTyped
-//        updateTableEmployee(jSearch.getText());
+        updateTableEmployee(jSearch.getText());
 
     }//GEN-LAST:event_jSearchKeyTyped
 
@@ -662,6 +660,7 @@ public class EmployeesInternalFrame extends javax.swing.JInternalFrame {
         int SelectRowIndex = tblEmployee.getSelectedRow();
 
         btnInsert.setEnabled(false);
+        jID.setEditable(false);
         jID.setText(model.getValueAt(SelectRowIndex, 1).toString());
         jFirst.setText(model.getValueAt(SelectRowIndex, 2).toString());
         jLast.setText(model.getValueAt(SelectRowIndex, 3).toString());
