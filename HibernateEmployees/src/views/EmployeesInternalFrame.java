@@ -63,9 +63,9 @@ public class EmployeesInternalFrame extends javax.swing.JInternalFrame {
         model.addColumn("Department ID");
 
         showTable();
-        getDepartment("");
-        getJob("");
-        getManager("");
+        getDepartment();
+        getJob();
+        getManager();
         nourut();
 
     }
@@ -115,31 +115,39 @@ public class EmployeesInternalFrame extends javax.swing.JInternalFrame {
         }
     }
     
-    private void getJob(String key) {
-//        for (Job job : new JobController(factory).getAll()) {
-//            jJob.addItem(job.getJobTitle());
-                for (Job job : jdao.getData(key)) {
+    private void getJob() {
+        for (Job job : new JobController(factory).getAll()) {
+//            jJob.addItem(job.getJobTitle()+ "-" + job.getJobTitle());
+//                for (Job job : jdao.getData(key)) {
+//            jJob.addItem(job.getJobId()+ "-" + job.getJobTitle());
+            if (job.getJobId()== null) {
+            jJob.addItem("");
+            } else {
             jJob.addItem(job.getJobId()+ "-" + job.getJobTitle());
+            }
         }
     }
 
-    private void getDepartment(String key) {
-//        for (Department department : new GeneralDAO<>(factory, Employee.class));
-//            jDepartment.addItem(department.getDepartmentId() + " - " + department.getDepartmentName());
-                for (Department depa : ddao.getData(key)) {
-            jDepartment.addItem(depa.getDepartmentId()+"-"+depa.getDepartmentName());
+    private void getDepartment() {
+        for (Department depa : new DepartmentController(factory).getAll()){
+//            jDepartment.addItem(depa.getDepartmentId() + "-" + depa.getDepartmentName());
+            if (depa.getDepartmentId()== null) {
+            jDepartment.addItem("");
+            } else {
+            jDepartment.addItem(depa.getDepartmentId()+ "-" + depa.getDepartmentName());
+            }
         }
     }
 
-    private void getManager(String key) {
-//        for (Employee employee : new EmployeeController(factory).getAll()) {
-//            jManager.addItem(employee.getEmployeeId() + " - " + employee.getLastName());
-                for (Employee emp : edao.getData(key)) {
+    private void getManager() {
+        for (Employee emp : new EmployeeController(factory).getAll()) {
+//            jManager.addItem(emp.getManagerId().getManagerId()+ "-" + emp.getManagerId().getLastName());
+//                for (Employee emp : edao.getData(key)) {
 //            jManager.addItem(emp.getManagerId().getLastName());
             if (emp.getManagerId() == null) {
             jManager.addItem("");
             } else {
-            jManager.addItem(emp.getEmployeeId()+ "-" + emp.getLastName());
+            jManager.addItem(emp.getManagerId().getEmployeeId()+ "-" + emp.getManagerId().getLastName());
             }
         }
     }
@@ -360,6 +368,11 @@ public class EmployeesInternalFrame extends javax.swing.JInternalFrame {
         });
 
         btnDelete.setText("Delete");
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActionPerformed(evt);
+            }
+        });
 
         btnReset.setText("Reset");
         btnReset.addActionListener(new java.awt.event.ActionListener() {
@@ -611,7 +624,7 @@ public class EmployeesInternalFrame extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jDatePropertyChange
 
     private void btnInsertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInsertActionPerformed
-        Employee emp = new Employee();
+//        Employee emp = new Employee();
         String dprtmnid = jDepartment.getSelectedItem().toString();
         dprtmnid = dprtmnid.substring(0, dprtmnid.indexOf("-"));
         String jbid = jJob.getSelectedItem().toString();
@@ -620,29 +633,29 @@ public class EmployeesInternalFrame extends javax.swing.JInternalFrame {
         mngrid = mngrid.substring(0, mngrid.indexOf("-"));
         date = jDate.getDate();
         
-        emp.setEmployeeId(new Integer(jID.getText()));
-        emp.setFirstName(jFirst.getText());
-        emp.setLastName(jLast.getText());
-        emp.setEmail(jEmail.getText());
-        emp.setPhoneNumber(jPhone.getText());
-        emp.setHireDate(jDate.getDate());
-        emp.setSalary(new BigDecimal(jSalary.getText()));
-        emp.setCommissionPct(new BigDecimal(jCommission.getText()));
-        emp.setDepartmentId(new Department(new Short(dprtmnid)));
-        emp.setManagerId(new Employee((new Integer(mngrid))));
-        emp.setJobId(new Job(((jbid))));
+//        emp.setEmployeeId(new Integer(jID.getText()));
+//        emp.setFirstName(jFirst.getText());
+//        emp.setLastName(jLast.getText());
+//        emp.setEmail(jEmail.getText());
+//        emp.setPhoneNumber(jPhone.getText());
+//        emp.setHireDate(jDate.getDate());
+//        emp.setSalary(new BigDecimal(jSalary.getText()));
+//        emp.setCommissionPct(new BigDecimal(jCommission.getText()));
+//        emp.setDepartmentId(new Department(new Short(dprtmnid)));
+//        emp.setManagerId(new Employee((new Integer(mngrid))));
+//        emp.setJobId(new Job(((jbid))));
 
         String hiredate = formatter.format(date);
         int confirm = JOptionPane.showConfirmDialog(this, "Kamu yakin mau menambah data?", "Konfirmasi", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
         if (confirm == JOptionPane.YES_OPTION) {
-//            JOptionPane.showMessageDialog(null, eco.save(jID.getText(), jFirst.getText(),
-//                    jLast.getText(), jEmail.getText(), jPhone.getText(), hiredate, jSalary.getText(),
-//                    jCommission.getText(), dprtmnid, mngrid, jbid));
-               if (confirm == JOptionPane.YES_OPTION) {
-            JOptionPane.showMessageDialog(null, edao.saveOrDelete(emp, false));
-//            insert();
+            JOptionPane.showMessageDialog(null, eco.save(jID.getText(), jFirst.getText(),
+                    jLast.getText(), jEmail.getText(), jPhone.getText(), hiredate, jSalary.getText(),
+                    jCommission.getText(), dprtmnid, mngrid, jbid));
+//               if (confirm == JOptionPane.YES_OPTION) {
+//            JOptionPane.showMessageDialog(null, edao.saveOrDelete(emp, false));
+////            insert();
+//        }
             resetText();
-        }
         }
     }//GEN-LAST:event_btnInsertActionPerformed
 
@@ -660,7 +673,6 @@ public class EmployeesInternalFrame extends javax.swing.JInternalFrame {
         int SelectRowIndex = tblEmployee.getSelectedRow();
 
         btnInsert.setEnabled(false);
-        jID.setEditable(false);
         jID.setText(model.getValueAt(SelectRowIndex, 1).toString());
         jFirst.setText(model.getValueAt(SelectRowIndex, 2).toString());
         jLast.setText(model.getValueAt(SelectRowIndex, 3).toString());
@@ -675,7 +687,7 @@ public class EmployeesInternalFrame extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_tblEmployeeMouseClicked
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
-       Employee emp = new Employee();
+//       Employee emp = new Employee();
         String dprtmnid = jDepartment.getSelectedItem().toString();
         dprtmnid = dprtmnid.substring(0, dprtmnid.indexOf("-"));
         String jbid = jJob.getSelectedItem().toString();
@@ -684,31 +696,43 @@ public class EmployeesInternalFrame extends javax.swing.JInternalFrame {
         mngrid = mngrid.substring(0, mngrid.indexOf("-"));
         date = jDate.getDate();
         
-        emp.setEmployeeId(new Integer(jID.getText()));
-        emp.setFirstName(jFirst.getText());
-        emp.setLastName(jLast.getText());
-        emp.setEmail(jEmail.getText());
-        emp.setPhoneNumber(jPhone.getText());
-        emp.setHireDate(jDate.getDate());
-        emp.setSalary(new BigDecimal(jSalary.getText()));
-        emp.setCommissionPct(new BigDecimal(jCommission.getText()));
-        emp.setDepartmentId(new Department(new Short(dprtmnid)));
-        emp.setManagerId(new Employee((new Integer(mngrid))));
-        emp.setJobId(new Job(((jbid))));
+//        emp.setEmployeeId(new Integer(jID.getText()));
+//        emp.setFirstName(jFirst.getText());
+//        emp.setLastName(jLast.getText());
+//        emp.setEmail(jEmail.getText());
+//        emp.setPhoneNumber(jPhone.getText());
+//        emp.setHireDate(jDate.getDate());
+//        emp.setSalary(new BigDecimal(jSalary.getText()));
+//        emp.setCommissionPct(new BigDecimal(jCommission.getText()));
+//        emp.setDepartmentId(new Department(new Short(dprtmnid)));
+//        emp.setManagerId(new Employee((new Integer(mngrid))));
+//        emp.setJobId(new Job(((jbid))));
 
         String hiredate = formatter.format(date);
         int confirm = JOptionPane.showConfirmDialog(this, "Kamu yakin mau menambah data?", "Konfirmasi", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
         if (confirm == JOptionPane.YES_OPTION) {
-//            JOptionPane.showMessageDialog(null, eco.save(jID.getText(), jFirst.getText(),
-//                    jLast.getText(), jEmail.getText(), jPhone.getText(), hiredate, jSalary.getText(),
-//                    jCommission.getText(), dprtmnid, mngrid, jbid));
-               if (confirm == JOptionPane.YES_OPTION) {
-            JOptionPane.showMessageDialog(null, edao.saveOrDelete(emp, false));
-//            insert();
+            JOptionPane.showMessageDialog(null, eco.save(jID.getText(), jFirst.getText(),
+                    jLast.getText(), jEmail.getText(), jPhone.getText(), hiredate, jSalary.getText(),
+                    jCommission.getText(), dprtmnid, mngrid, jbid));
+//               if (confirm == JOptionPane.YES_OPTION) {
+//            JOptionPane.showMessageDialog(null, edao.saveOrDelete(emp, false));
+////            insert();
+//        }
             resetText();
         }
-        }
     }//GEN-LAST:event_btnUpdateActionPerformed
+
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        int confirm = JOptionPane.showConfirmDialog(this, "Kamu yakin mau menghapus data?", "Konfirmasi", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        if (confirm == JOptionPane.YES_OPTION) {
+            JOptionPane.showMessageDialog(null, eco.delete(jID.getText()));
+//               if (confirm == JOptionPane.YES_OPTION) {
+//            JOptionPane.showMessageDialog(null, edao.saveOrDelete(emp, false));
+////            insert();
+//        }
+            resetText();
+        }
+    }//GEN-LAST:event_btnDeleteActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
