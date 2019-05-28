@@ -21,7 +21,7 @@ public class DepartmentController implements IDepartmentController {
 
     @Override
     public List<Department> getAll() {
-        return gdao.getData(gdao);
+        return gdao.getData("");
     }
 
     @Override

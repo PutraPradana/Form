@@ -9,10 +9,15 @@ import icontroller.IEmployeeController;
 import idaos.IGeneralDAO;
 import daos.GeneralDAO;
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import models.Department;
 import models.Employee;
+import models.Job;
 import org.hibernate.SessionFactory;
 
 /**
@@ -32,7 +37,7 @@ public class EmployeeController implements IEmployeeController{
     
     @Override
     public List<Employee> getAll() {
-        return gdao.getData(gdao);
+        return gdao.getData("");
     }
 
     @Override
@@ -48,7 +53,7 @@ public class EmployeeController implements IEmployeeController{
    
     @Override
     public String delete(String id) {
-        if (gdao.saveOrDelete(new Employee(), true)) {
+        if (gdao.saveOrDelete(new Employee(new Integer(id)), true)) {
             return "Data berhasil dihapus";
         }else{
             return "Data gagal dihapus";
@@ -56,13 +61,17 @@ public class EmployeeController implements IEmployeeController{
     }
 
     @Override
-    public String save(String id, String firstName, String lastName, String email, String phoneNumber, String hireDate, String salary, String commissionPct, String department, String manager, String job) {
-        
-        if (gdao.saveOrDelete(new Employee(), false)) {
-            return "Data berhasil ditambahkan";
-        }else{
-            return "Data gagal ditambahkan";
+    public String save(String Id, String firstName, String lastName, String email, String phoneNumber, String hireDate, String salary, String commissionPct, String department, String manager, String job) {
+        String result = "Data gagal disimpan";
+        try {
+            date = formatter.parse(hireDate);
+            if (gdao.saveOrDelete(new Employee(Integer.parseInt(Id), firstName, lastName, email, phoneNumber, new java.sql.Date(date.getTime()), new BigDecimal(salary), new BigDecimal(commissionPct), new Department(Short.parseShort(department)), new Employee(Integer.parseInt(manager)), new Job(job)), false)) {
+                result = "Data berhasil di simpan";
+            }
+        } catch (ParseException ex) {
+            Logger.getLogger(EmployeeController.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return result;
     }
     
 }

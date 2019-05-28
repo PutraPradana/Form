@@ -34,12 +34,12 @@ import java.time.LocalDateTime;
  */
 public class EmployeesInternalFrame extends javax.swing.JInternalFrame {
 
-    DefaultTableModel model = new DefaultTableModel();
     SessionFactory factory = HibernateUtil.getSessionFactory();
+    DefaultTableModel model = new DefaultTableModel();
 
-    GeneralDAO<Employee> edao = new GeneralDAO<>(factory, Employee.class);
-    GeneralDAO<Department> ddao = new GeneralDAO<>(factory, Department.class);
-    GeneralDAO<Job> jdao = new GeneralDAO<>(factory, Job.class);
+//    GeneralDAO<Employee> edao = new GeneralDAO<>(factory, Employee.class);
+//    GeneralDAO<Department> ddao = new GeneralDAO<>(factory, Department.class);
+//    GeneralDAO<Job> jdao = new GeneralDAO<>(factory, Job.class);
     IEmployeeController eco = new EmployeeController(factory);
     IJobController jco = new JobController(factory);
     IDepartmentController dco = new DepartmentController(factory);
@@ -62,7 +62,7 @@ public class EmployeesInternalFrame extends javax.swing.JInternalFrame {
         model.addColumn("Manager ID");
         model.addColumn("Department ID");
 
-        showTable();
+        showTable("");
         getDepartment();
         getJob();
         getManager();
@@ -85,6 +85,9 @@ public class EmployeesInternalFrame extends javax.swing.JInternalFrame {
         DefaultTableModel model = (DefaultTableModel) tblEmployee.getModel();
         Object[] row = new Object[12];
         List<Employee> emp = new ArrayList<>();
+        if (key == "") {
+            emp = eco.getAll();
+        }
         emp = eco.search(key);
 
         for (int i = 0; i < emp.size(); i++) {
@@ -105,7 +108,7 @@ public class EmployeesInternalFrame extends javax.swing.JInternalFrame {
             } else {
                 row[10] = emp.get(i).getManagerId().getLastName();
             }
-//
+
             if (emp.get(i).getDepartmentId() == null) {
                 row[11] = "";
             } else {
@@ -114,28 +117,28 @@ public class EmployeesInternalFrame extends javax.swing.JInternalFrame {
             model.addRow(row);
         }
     }
-    
+
     private void getJob() {
         for (Job job : new JobController(factory).getAll()) {
-//            jJob.addItem(job.getJobTitle()+ "-" + job.getJobTitle());
+            jJob.addItem(job.getJobId() + "-" + job.getJobTitle());
 //                for (Job job : jdao.getData(key)) {
 //            jJob.addItem(job.getJobId()+ "-" + job.getJobTitle());
-            if (job.getJobId()== null) {
-            jJob.addItem("");
-            } else {
-            jJob.addItem(job.getJobId()+ "-" + job.getJobTitle());
-            }
+//            if (job.getJobId()== null) {
+//            jJob.addItem("");
+//            } else {
+//            jJob.addItem(job.getJobId()+ "-" + job.getJobTitle());
+//            }
         }
     }
 
     private void getDepartment() {
-        for (Department depa : new DepartmentController(factory).getAll()){
-//            jDepartment.addItem(depa.getDepartmentId() + "-" + depa.getDepartmentName());
-            if (depa.getDepartmentId()== null) {
-            jDepartment.addItem("");
-            } else {
-            jDepartment.addItem(depa.getDepartmentId()+ "-" + depa.getDepartmentName());
-            }
+        for (Department depa : new DepartmentController(factory).getAll()) {
+            jDepartment.addItem(depa.getDepartmentId() + "-" + depa.getDepartmentName());
+//            if (depa.getDepartmentId()== null) {
+//            jDepartment.addItem("");
+//            } else {
+//            jDepartment.addItem(depa.getDepartmentId()+ "-" + depa.getDepartmentName());
+//            }
         }
     }
 
@@ -145,46 +148,46 @@ public class EmployeesInternalFrame extends javax.swing.JInternalFrame {
 //                for (Employee emp : edao.getData(key)) {
 //            jManager.addItem(emp.getManagerId().getLastName());
             if (emp.getManagerId() == null) {
-            jManager.addItem("");
+                jManager.addItem("");
             } else {
-            jManager.addItem(emp.getManagerId().getEmployeeId()+ "-" + emp.getManagerId().getLastName());
+                jManager.addItem(emp.getManagerId().getEmployeeId() + "-" + emp.getManagerId().getLastName());
             }
         }
     }
 
-    public void showTable() {
-        DefaultTableModel model = (DefaultTableModel) tblEmployee.getModel();
-        Object[] row = new Object[12];
-        List<Employee> emp = new ArrayList<>();
-        emp = eco.getAll();
-
-        for (int i = 0; i < emp.size(); i++) {
-            row[0] = nourut();
-            row[1] = emp.get(i).getEmployeeId();
-            row[2] = emp.get(i).getFirstName();
-            row[3] = emp.get(i).getLastName();
-            row[4] = emp.get(i).getEmail();
-            row[5] = emp.get(i).getPhoneNumber();
-            row[6] = emp.get(i).getHireDate();
-            row[7] = emp.get(i).getJobId().getJobTitle();
-            row[8] = emp.get(i).getSalary();
-            row[9] = emp.get(i).getCommissionPct();
+//    public void showTable() {
+//        DefaultTableModel model = (DefaultTableModel) tblEmployee.getModel();
+//        Object[] row = new Object[12];
+//        List<Employee> emp = new ArrayList<>();
+//        emp = eco.getAll();
+//
+//        for (int i = 0; i < emp.size(); i++) {
+//            row[0] = nourut();
+//            row[1] = emp.get(i).getEmployeeId();
+//            row[2] = emp.get(i).getFirstName();
+//            row[3] = emp.get(i).getLastName();
+//            row[4] = emp.get(i).getEmail();
+//            row[5] = emp.get(i).getPhoneNumber();
+//            row[6] = emp.get(i).getHireDate();
+//            row[7] = emp.get(i).getJobId().getJobTitle();
+//            row[8] = emp.get(i).getSalary();
+//            row[9] = emp.get(i).getCommissionPct();
 //            row[11] = emp.get(i).getDepartmentId().getDepartmentName();
 
-            if (emp.get(i).getManagerId() == null) {
-                row[10] = "";
-            } else {
-                row[10] = emp.get(i).getManagerId().getLastName();
-            }
+//            if (emp.get(i).getManagerId() == null) {
+//                row[10] = "";
+//            } else {
+//                row[10] = emp.get(i).getManagerId().getLastName();
+//            }
 //
-            if (emp.get(i).getDepartmentId() == null) {
-                row[11] = "";
-            } else {
-                row[11] = emp.get(i).getDepartmentId().getDepartmentName();
-            }
-            model.addRow(row);
-        }
-    }
+//            if (emp.get(i).getDepartmentId() == null) {
+//                row[11] = "";
+//            } else {
+//                row[11] = emp.get(i).getDepartmentId().getDepartmentName();
+//            }
+//            model.addRow(row);
+//        }
+//    }
 
 //    public void insert() {
 //        DefaultTableModel model = (DefaultTableModel) tblEmployee.getModel();
@@ -200,13 +203,13 @@ public class EmployeesInternalFrame extends javax.swing.JInternalFrame {
 ////        }
 //        showTable(key);
 //    }
-        public void updateTableEmployee(String s) {
+    public void updateTableEmployee(String key) {
         DefaultTableModel model = (DefaultTableModel) tblEmployee.getModel();
         model.setRowCount(0);
-        if (s == "") {
-            showTable();
+        if (key == "") {
+            showTable("");
         }
-        showTable(s);
+        showTable(key);
     }
 
     public void resetText() {
@@ -632,7 +635,7 @@ public class EmployeesInternalFrame extends javax.swing.JInternalFrame {
         jbid = jbid.substring(0, jbid.indexOf("-"));
         mngrid = mngrid.substring(0, mngrid.indexOf("-"));
         date = jDate.getDate();
-        
+
 //        emp.setEmployeeId(new Integer(jID.getText()));
 //        emp.setFirstName(jFirst.getText());
 //        emp.setLastName(jLast.getText());
@@ -644,7 +647,6 @@ public class EmployeesInternalFrame extends javax.swing.JInternalFrame {
 //        emp.setDepartmentId(new Department(new Short(dprtmnid)));
 //        emp.setManagerId(new Employee((new Integer(mngrid))));
 //        emp.setJobId(new Job(((jbid))));
-
         String hiredate = formatter.format(date);
         int confirm = JOptionPane.showConfirmDialog(this, "Kamu yakin mau menambah data?", "Konfirmasi", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
         if (confirm == JOptionPane.YES_OPTION) {
@@ -695,7 +697,7 @@ public class EmployeesInternalFrame extends javax.swing.JInternalFrame {
         jbid = jbid.substring(0, jbid.indexOf("-"));
         mngrid = mngrid.substring(0, mngrid.indexOf("-"));
         date = jDate.getDate();
-        
+
 //        emp.setEmployeeId(new Integer(jID.getText()));
 //        emp.setFirstName(jFirst.getText());
 //        emp.setLastName(jLast.getText());
@@ -707,9 +709,8 @@ public class EmployeesInternalFrame extends javax.swing.JInternalFrame {
 //        emp.setDepartmentId(new Department(new Short(dprtmnid)));
 //        emp.setManagerId(new Employee((new Integer(mngrid))));
 //        emp.setJobId(new Job(((jbid))));
-
         String hiredate = formatter.format(date);
-        int confirm = JOptionPane.showConfirmDialog(this, "Kamu yakin mau menambah data?", "Konfirmasi", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        int confirm = JOptionPane.showConfirmDialog(this, "Kamu yakin mau mengubah data?", "Konfirmasi", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
         if (confirm == JOptionPane.YES_OPTION) {
             JOptionPane.showMessageDialog(null, eco.save(jID.getText(), jFirst.getText(),
                     jLast.getText(), jEmail.getText(), jPhone.getText(), hiredate, jSalary.getText(),

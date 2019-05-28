@@ -21,7 +21,7 @@ public class JobController implements IJobController {
 
     @Override
     public List<Job> getAll() {
-        return gdao.getData(gdao);
+        return gdao.getData("");
     }
 
     @Override

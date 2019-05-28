@@ -35,13 +35,22 @@ public class ManualTest {
         GeneralDAO<Employee> edao = new GeneralDAO<>(factory, Employee.class);
         IEmployeeController eco = new EmployeeController(factory);
         
-        System.out.println(eco.search("King"));
+
+//        System.out.println(eco.delete("900"));
 //        System.out.println(eco.getById("100").getFirstName());
 
 //manualtest controller get all
-//        for (Employee employee : eco.getAll()) {
+        for (Employee employee : eco.getAll()) {
+            System.out.println(employee.getFirstName());
+        }
+        
+        //manualtest controller get all
+//        for (Employee employee : eco.search("King")) {
 //            System.out.println(employee.getFirstName());
+//            System.out.println(employee.getEmail());
 //        }
+        
+        
 
 //manualtest DAO getdata
 //        for (Employee employee : edao.getData("")) {
